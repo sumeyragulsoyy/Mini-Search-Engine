@@ -1,17 +1,3 @@
-# -*- coding: utf-8 -*-
-"""
-Created on Tue Mar 26 17:03:41 2019
-
-@author: sumey
-"""
-'''
-from pytrie import StringTrie as Trie
-t = Trie(an={1:'sum',2:'gul',3:'hey'}, ant=[5,6], all=2, allot=3, alloy=4, aloe=5, are=6, be=7)
-'''
-
-#menuSelection=input('Hello, \nFirstly,Enter a path that includes txt files : ')
-
-#----------------------------------------------- query 2---------
 import os           
 from pytrie import StringTrie as Trie
 import re
