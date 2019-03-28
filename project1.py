@@ -2,6 +2,25 @@ import os
 from pytrie import StringTrie as Trie
 import re
 
+def printStr(param):
+    print(param[0])
+   
+    for key in param[1]:
+        val = param[1][key]
+        file = open(path + '\\' + key,'r')
+        print(str(key) + ':' + str(val) + ' value:' + printWord(file, val, param[0]))
+    return
+
+def printWord(file, index, word):
+    fileInd = 0
+    for item in index:
+        for line in file:
+            words = re.findall(r'\w+',line)
+            if item-fileInd < len(line):
+                print(line[item])
+            else:
+                fileInd += len(line)-1
+
 firstTrie = Trie() #create empty trie FOR QUERY1
 secondTrie = Trie() # create empty trie FOR QUERY2
 # path = input('Hello, \nFirstly,Enter a path that includes txt files : ')  
@@ -58,25 +77,6 @@ for i in range(len(all_files)):
                     firstTrie.get(res[j].lower())[all_files[i]]=[index]
             counter += len(line)-1    
 
-def printStr(param):
-    print(param[0])
-   
-    for key in param[1]:
-        val = param[1][key]
-        file = open(path + '\\' + key,'r')
-        print(str(key) + ':' + str(val) + ' value:' + printWord(file, val, param[0]))
-    return
-
-def printWord(file, index,word):
-    fileInd = 0
-    for line in file:
-        words = re.findall(r'\w+',line)
-        if index-fileInd < len(line):
-            print(line[index])
-        else:
-            fileInd += len(line)-1
-    return
-
 while True:
     MENU = input('\nWhich query do you want to execute? Select a number. \n1.Search a prefix on the trie  \n2.Common words of files \n3.Exit\n')
     if MENU == '1':
@@ -84,8 +84,8 @@ while True:
         X = firstTrie.items(prefix=pre.lower())  #LİST OF WORD,FİLE NAME,İNDEX NUMBER IN FILES   
         if X:
             for g in range(len(X)):
-                #printStr(X[g])
-                print(str(X[g]) + "\n")
+                printStr(X[g])
+                #print(str(X[g]) + "\n")
         else:
             print('There is no words starting with this prefix.') 
     
