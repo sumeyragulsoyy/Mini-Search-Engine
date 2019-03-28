@@ -17,18 +17,24 @@ def printStr(param):
     for key in param[1]:
         val = param[1][key]
         file = open(path + '\\' + key,'r')
-        print(str(key) + ':' + str(val) + ' value:' + printWord(file, val, param[0]))
+        print(str(key) + ':' + str(val) + ' value:')
+        #print(str(printWord(file, val, param[0])))
+        printWord(file, val, param[0])
     return
 
 def printWord(file, index, word):
     fileInd = 0
-    for item in index:
-        for line in file:
-            words = re.findall(r'\w+',line)
-            if item-fileInd < len(line):
-                print(line[item])
+    countInd=0
+    #for item in index:
+    for line in file:
+        words = re.findall(r'\w+',line)
+        for iter in words:
+            if index[countInd]-fileInd < len(line) and iter == word:
+                print(line[index[countInd]: index[countInd]+len(word)])
+                countInd += 1
             else:
                 fileInd += len(line)-1
+    return
 
 firstTrie = Trie() #create empty trie FOR QUERY1
 secondTrie = Trie() # create empty trie FOR QUERY2
