@@ -2,6 +2,15 @@ import os
 from pytrie import StringTrie as Trie
 import re
 
+
+#Checking for valid path name
+while True:
+    path = input('Enter a valid path that includes txt files : ')  
+    if os.path.exists(path):
+        all_files = os.listdir(path)
+        break
+
+
 def printStr(param):
     print(param[0])
    
@@ -25,13 +34,6 @@ firstTrie = Trie() #create empty trie FOR QUERY1
 secondTrie = Trie() # create empty trie FOR QUERY2
 # path = input('Hello, \nFirstly,Enter a path that includes txt files : ')  
 # all_files = os.listdir(path) 
-
-#Checking for valid path name
-while True:
-    path = input('Enter a valid path that includes txt files : ')  
-    if os.path.exists(path):
-        all_files = os.listdir(path)
-        break
 
 
 #BUİLD TRİE FOR QUERY 2
