@@ -1,6 +1,7 @@
 import os           
 from pytrie import StringTrie as Trie
 import re
+import string
 
 
 #Checking for valid path name until user enters a valid path name
@@ -22,7 +23,8 @@ def printStr(param):
         #Opening the file
         file = open(path + '\\' + key,'r')
         #Printing the txt file name
-        print(str(key)+ ' : ')
+        if val:
+            print(str(key)+ ' : ')
         #By giving the file, positions and word, printing strings from txt file
         printWord(file, val, param[0])
         print()
@@ -35,6 +37,8 @@ def printWord(file, index, word):
     countInd=0
     #Reading txt file line by line
     for line in file:
+        if countInd == len(index):
+            break
         #Seperating the words by whitespaces
         words = line.split(' ')
         #Checking each word
@@ -42,7 +46,8 @@ def printWord(file, index, word):
             #If there are still positions to print
             if countInd <= len(index)-1:
                 #Cleaning the word from ' char
-                iter2 = re.sub("'", '', iter)
+                #iter2 = re.sub("'", '', iter)
+                iter2 = iter.translate(str.maketrans('', '', string.punctuation))
                 #Comparing the word and the current text which are the same or not
                 if iter2.lower() == word or iter2.lower() == word + '\n':
                     #Printing the strings from specified positions on the txt file
