@@ -59,28 +59,26 @@ def printWord(file, index, word):
                 break
     return
 
-def returnIndexofWord(ormalline,words,n,counter):
+#This function returns the indexes of the words
+def returnIndexofWord(normalline,words,n,counter):
     query=words[n]
     r = re.compile(query)
-    indexx=[[m.start(),m.end()] for m in r.finditer(ormalline)] #all matches characters
+    indexx=[[m.start(),m.end()] for m in r.finditer(normalline)] #all matches characters
     newIndexx=indexx.copy()
     for h in range(len(indexx)):
         flag=1
-        if  indexx[h][0] !=0 : # başlangıç 0 dan farklıysa önceki char kontrolü
-            if ormalline[indexx[h][0]-1].isalpha() : #start index check for 17 ,ıt is not a starting index of line
-                flag=0 # this is a not a starting of the searched word, this is another word
+        if  indexx[h][0] !=0 : #If the beginning of the word is is not zero index 
+            if normalline[indexx[h][0]-1].isalpha() : #Checks whether previous char is letter or not
+                flag=0 #This is a not a starting of the searched word, this is another word
                 newIndexx.remove(indexx[h])
-        if flag==1 and indexx[h][1] !=len(ormalline): # starting index is meaningful ,end check should be
-            if ormalline[indexx[h][1]].isalpha(): # It is not an end of word ,this end index is meaningless
+        if flag==1 and indexx[h][1] !=len(normalline): #Starting index is meaningful ,end check should be
+            if normalline[indexx[h][1]].isalpha(): #It is not an end of word, this end index is meaningless
                 newIndexx.remove(indexx[h])
         
-    #newIndexx    # exact match indexes from original txt word by word
     startingIndex=[]
-    for s in range(len(newIndexx)): # take starting index of repeated string in one line ,we are looking line by line
-        startingIndex.append(newIndexx[s][0]+counter) # take only starting index
+    for s in range(len(newIndexx)): #Take the starting indexes of repeated same strings in one line, we are looking line by line
+        startingIndex.append(newIndexx[s][0]+counter) #Take only starting index not the end index
     return startingIndex
-
-
 
 #Creating empty trie for query1
 firstTrie = Trie()
@@ -113,16 +111,13 @@ for i in range(len(all_files)):
         for line in f:
             normalLine = line #With ' characters
             line = re.sub("'", '', line) #Removing ' char
+            line = re.sub('-', '', line) #Removing - char
             res = re.findall(r'\w+',line) #to get word one by one without punctional marks
-            words=normalLine.split() #split by whitespace to get indexes of each word 
+            words=normalLine.split() #Split by whitespace to get indexes of each word 
             
-            #take list of words line by line ,convert lower and put with filename to trie
+            #Take list of words line by line ,convert lower and put with filename to trie
             for j in range(len(res)):
-                #check the key existence in the trie
-                #need index data
-                
-                #index = counter + line.index(res[j]) #take index of each word
-                index=returnIndexofWord(normalLine,words,j,counter)
+                index = returnIndexofWord(normalLine,words,j,counter)
                 
                 if not firstTrie.has_key(res[j].lower()): #  word is NOT in the trie
                     firstTrie[res[j].lower()] = {all_files[i]:{index[0]}} # word-> set of file, index : set
@@ -130,26 +125,26 @@ for i in range(len(all_files)):
                         for r in range(1,len(index)):
                             firstTrie.get(res[j].lower()).get(all_files[i]).add(index[r])
                 
-                elif all_files[i] in firstTrie[res[j].lower()].keys(): #means that word same, file same, index different
-                    # set is not empty so we try to add if not exist the indexes one by one 
+                elif all_files[i] in firstTrie[res[j].lower()].keys(): #Means that word is the same, file same and index is different
+                    #Set is not empty so we try to add if not exist the indexes one by one 
                     for a in range(len(index)):    
-                        firstTrie.get(res[j].lower()).get(all_files[i]).add(index[a]) # if word is IN the trie add only file info to fileSET OF WORD
+                        firstTrie.get(res[j].lower()).get(all_files[i]).add(index[a]) #If word is IN the trie add only file info to fileSET OF WORD
                 
-                else: #word same,file different so index doesn't exist
+                else: #Word is same, file is different so index doesn't exist
                     firstTrie.get(res[j].lower())[all_files[i]]={index[0]}
                     if len(index) !=1:
                         for n in range(1,len(index)):
                             firstTrie.get(res[j].lower()).get(all_files[i]).add(index[n])
-                        
             counter += len(line)-1    
-
+#MENU 
 while True:
     MENU = input('\nWhich query do you want to execute? Select a number. \n1.Search a prefix on the trie  \n2.Common words of files \n3.Exit\n')
     #If the chosen option is finding prefix
     if MENU == '1':
         pre = input('Enter a prefix to search words: ')
         pre = re.sub("'", '', pre)
-        X = firstTrie.items(prefix=pre.lower())  #LİST OF WORD,FİLE NAME,İNDEX NUMBER IN FILES   
+        pre = re.sub("-", '', pre)
+        X = firstTrie.items(prefix=pre.lower())  #Output list of the words, file names and index number in the files   
         if X:
             for g in range(len(X)):
                 #Print method to print all occurences fiven prefix
@@ -161,7 +156,7 @@ while True:
     elif MENU == '2':
         files = input('Enter file names to search common words: ').split() #seperated by whitespace
         common = 0 #Checks whether common words or not                   
-        common_words = []
+        common_words = [] #Output list
         for word in secondTrie:
             flag = 1
             for z in range(len(files)):
