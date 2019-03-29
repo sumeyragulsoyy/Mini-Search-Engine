@@ -23,7 +23,6 @@ def printStr(param):
         file = open(path + '\\' + key,'r')
         #Printing the txt file name
         print(str(key)+ ' : ')
-        #print(str(printWord(file, val, param[0])))
         #By giving the file, positions and word, printing strings from txt file
         printWord(file, val, param[0])
         print()
@@ -31,14 +30,11 @@ def printStr(param):
 
 #This function prints the strings with the specified positions
 def printWord(file, index, word):
-    #fileInd holds the character index in the file to
-    #fileInd = 0
+    index = sorted(index)
     #Holds the index of the position index
     countInd=0
-    #for item in index:
     #Reading txt file line by line
     for line in file:
-        #words = re.findall(r'\w+',line)
         #Seperating the words by whitespaces
         words = line.split(' ')
         #Checking each word
@@ -47,17 +43,15 @@ def printWord(file, index, word):
             if countInd <= len(index)-1:
                 #Cleaning the word from ' char
                 iter2 = re.sub("'", '', iter)
-                #if index[countInd]-fileInd < len(line) and iter2.lower() == word:
                 #Comparing the word and the current text which are the same or not
                 if iter2.lower() == word or iter2.lower() == word + '\n':
-                    #print(line[index[countInd]-fileInd: index[countInd]-fileInd+len(word)])
                     #Printing the strings from specified positions on the txt file
-                    print(str(index[countInd]) + ': ' + iter)
-                    #------------! filelist artık set ,list değil bastırırken hata geliyor bakılacak
-                   # print(+ fileInd)
+                    if('\n' in iter):
+                        iter = iter[:-1]
+                    print(str(index[countInd]) + ' : ' + iter)
                     countInd += 1
-        
-        #fileInd += len(line)-1
+            else: #All words are found
+                break
     return
 
 def returnIndexofWord(ormalline,words,n,counter):
@@ -149,20 +143,20 @@ while True:
     #If the chosen option is finding prefix
     if MENU == '1':
         pre = input('Enter a prefix to search words: ')
-        #eğer girilen input ozge's is ozges yap öyle trie da arat !!!!!!!! bu eklenecek
+        pre = re.sub("'", '', pre)
         X = firstTrie.items(prefix=pre.lower())  #LİST OF WORD,FİLE NAME,İNDEX NUMBER IN FILES   
         if X:
             for g in range(len(X)):
                 #Print method to print all occurences fiven prefix
                 printStr(X[g])
-                #print(str(X[g]) + "\n")
         else:
             #Giving error
             print('There is no words starting with this prefix.') 
     #If the chosen option is common words
     elif MENU == '2':
         files = input('Enter file names to search common words: ').split() #seperated by whitespace
-                            
+        common = 0 #Checks whether common words or not                   
+        common_words = []
         for word in secondTrie:
             flag = 1
             for z in range(len(files)):
@@ -170,7 +164,12 @@ while True:
                     flag = 0
                     break
             if flag == 1: #means that this word exist in given files COMMONLY
-                print(word)
+                common_words.append(word)
+                common = 1
+        if common == 1:
+            print(common_words)
+        else:
+            print('\nThere is no common word')
     #Exiting from the program
     elif MENU == '3':
         break 
